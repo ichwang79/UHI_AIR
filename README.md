@@ -1,12 +1,8 @@
-# Paper 3 — submission package
+# submission package
 
 **Title.** *A raw, homogenization-free global dataset of air-temperature urban heat-island intensity from GHCN-Daily, 1941–2020*
 
-**Target journal.** *Geoscience Data Journal* (Wiley/RMetS). Data article; hybrid, subscription route → no APC. Data descriptors are assessed on the rigour of construction, validation and reusability rather than on novelty of findings, which is where this record is strongest. *ESSD* and *Scientific Data* are higher-visibility alternatives but levy APCs (~€1,000–1,500 and ~$2,290).
-
 **One line.** A quality-controlled but explicitly **non-homogenized** air-temperature UHI record — because breakpoint homogenization removes the gradual urban signal it is built to measure — released with the code and derived panels that reproduce the two companion analyses exactly.
-
-**Companions.** Paper 1 (*Journal of Climate*) and Paper 2 (*Urban Climate*) are the analyses this release supports.
 
 ## Contents
 
