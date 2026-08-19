@@ -2,7 +2,7 @@
 
 Construction and validation scripts for a raw, homogenization-free global air-temperature urban heat-island (UHI) dataset built from GHCN-Daily (1941–2020).
 
-The dataset these scripts build and validate is archived separately on Zenodo — DOI `10.5281/zenodo.XXXXXXX` (placeholder, update once minted), licensed **CC-BY-4.0**. This repository holds only the code, licensed **MIT**.
+This code is archived on Zenodo: DOI [`10.5281/zenodo.22006819`](https://doi.org/10.5281/zenodo.22006819), licensed **MIT**. The dataset these scripts build and validate is archived separately on Zenodo — DOI `10.5281/zenodo.XXXXXXX` (placeholder, update once minted), licensed **CC-BY-4.0**.
 
 All scripts read exclusively from the deposited `data/` files (no absolute or machine-specific paths); each resolves its data directory relative to its own location via `Path(__file__).resolve().parent.parent / "data"`.
 
@@ -39,4 +39,4 @@ That pulls the full ~132,501-station archive (~30 GB); the dataset's `need_broad
 
 ## License
 
-Code: MIT. Dataset (Zenodo): CC-BY-4.0.
+Code: MIT ([DOI](https://doi.org/10.5281/zenodo.22006819)). Dataset (Zenodo): CC-BY-4.0.
