@@ -7,8 +7,24 @@ Needs the raw .dly archive, not redistributed with this release (see README:
 at wherever you synced it; this script does not otherwise read from data/."""
 import os, glob, numpy as np, pandas as pd
 from pathlib import Path
-DATA = Path(__file__).resolve().parent.parent / "data"
-DLY = "dly"   # path to the synced raw archive, relative to the current working directory
+def _data_dir():
+    """Where the Zenodo release was unpacked: --data, else $UHI_AIR_DATA, else ../data."""
+    import argparse as _ap, os as _os
+    _p = _ap.ArgumentParser(add_help=False)
+    _p.add_argument("--data", default=_os.environ.get(
+        "UHI_AIR_DATA", str(Path(__file__).resolve().parent.parent / "data")))
+    _d = Path(_p.parse_known_args()[0].data)
+    if not _d.is_dir():
+        raise SystemExit(
+            f"data directory not found: {_d}\n"
+            "Download the dataset from https://doi.org/10.5281/zenodo.22006933 and pass its\n"
+            "location with --data /path/to/data (or set UHI_AIR_DATA).")
+    return _d
+
+DATA = _data_dir()
+import argparse as _ap
+_dp=_ap.ArgumentParser(add_help=False); _dp.add_argument("--dly", default="dly")
+DLY = _dp.parse_known_args()[0].dly   # path to the synced raw archive, relative to the current working directory
 MIN_DAYS = 20      # valid days per month
 MIN_MON  = 11      # valid months per year
 def parse(path):
@@ -42,6 +58,18 @@ def parse(path):
             ann[yr] = float(np.mean(ms))
     return ann
 
+# The raw GHCN-Daily .dly archive is not part of the Zenodo deposit: it is large and available
+# unchanged from NOAA. Without it this script would parse zero files and write an empty table
+# straight over a deposited output, so it stops here instead of failing silently.
+_found = sorted(Path(DLY).glob("*.dly")) if Path(DLY).is_dir() else []
+if not _found:
+    raise SystemExit(
+        f"no .dly files under {DLY!r}\n"
+        "This step rebuilds the station panel from the raw GHCN-Daily archive, which is not\n"
+        "redistributed here. Fetch it from NOAA (see the README) and point DLY at the unpacked\n"
+        "directory, or set --dly /path/to/ghcnd_all.\n"
+        "You do not need to re-run this to reproduce any result in the paper: its output,\n"
+        "annual_by_elem.csv, is part of the deposit.")
 files = glob.glob(f"{DLY}/*.dly")
 print(f"parsing {len(files)} .dly files...")
 rows = []

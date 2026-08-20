@@ -28,8 +28,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+def _data_dir():
+    """Where the Zenodo release was unpacked: --data, else $UHI_AIR_DATA, else ../data."""
+    import argparse as _ap, os as _os
+    _p = _ap.ArgumentParser(add_help=False)
+    _p.add_argument("--data", default=_os.environ.get(
+        "UHI_AIR_DATA", str(Path(__file__).resolve().parent.parent / "data")))
+    _d = Path(_p.parse_known_args()[0].data)
+    if not _d.is_dir():
+        raise SystemExit(
+            f"data directory not found: {_d}\n"
+            "Download the dataset from https://doi.org/10.5281/zenodo.22006933 and pass its\n"
+            "location with --data /path/to/data (or set UHI_AIR_DATA).")
+    return _d
+
+DATA = _data_dir()
 ROOT = Path(__file__).resolve().parent.parent
-d = pd.read_csv(ROOT / "data/homogenization_sensitivity.csv")
+d = pd.read_csv(DATA / "homogenization_sensitivity.csv")
 
 BLUE, RED, GREY = "#1f6fb4", "#c0392b", "#666666"
 labels = ["ALL" if p == "global" else p for p in d.panel]
@@ -68,7 +83,9 @@ for sp in ("top", "right"):
 
 fig.tight_layout(rect=[0, 0, 1, 0.90])
 fig.subplots_adjust(top=0.80)
-fig.savefig(ROOT / "figures/HERO_paper3.png", dpi=160)
+_out = ROOT / "figures" / "HERO_paper3.png"
+_out.parent.mkdir(parents=True, exist_ok=True)
+fig.savefig(_out, dpi=160)
 plt.close(fig)
 print(f"HERO_paper3.png rebuilt from {len(d)} panels")
 print(d.to_string(index=False))

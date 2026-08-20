@@ -9,7 +9,21 @@ Second step of a three-script chain, all reading only this release's own data/:
 import numpy as np, pandas as pd, re
 from pathlib import Path
 from scipy import stats
-DATA = Path(__file__).resolve().parent.parent / "data"
+def _data_dir():
+    """Where the Zenodo release was unpacked: --data, else $UHI_AIR_DATA, else ../data."""
+    import argparse as _ap, os as _os
+    _p = _ap.ArgumentParser(add_help=False)
+    _p.add_argument("--data", default=_os.environ.get(
+        "UHI_AIR_DATA", str(Path(__file__).resolve().parent.parent / "data")))
+    _d = Path(_p.parse_known_args()[0].data)
+    if not _d.is_dir():
+        raise SystemExit(
+            f"data directory not found: {_d}\n"
+            "Download the dataset from https://doi.org/10.5281/zenodo.22006933 and pass its\n"
+            "location with --data /path/to/data (or set UHI_AIR_DATA).")
+    return _d
+
+DATA = _data_dir()
 META={}
 for l in open(DATA/"ghcnd-stations.txt",encoding="latin-1"):
     sid=l[0:11]; META[sid]=dict(net=l[2], name=l[41:71].strip(), gsn=l[72:75].strip(),

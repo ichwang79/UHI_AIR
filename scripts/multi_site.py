@@ -3,7 +3,21 @@
 import numpy as np, pandas as pd
 from math import radians, cos
 from pathlib import Path
-DATA = Path(__file__).resolve().parent.parent / "data"
+def _data_dir():
+    """Where the Zenodo release was unpacked: --data, else $UHI_AIR_DATA, else ../data."""
+    import argparse as _ap, os as _os
+    _p = _ap.ArgumentParser(add_help=False)
+    _p.add_argument("--data", default=_os.environ.get(
+        "UHI_AIR_DATA", str(Path(__file__).resolve().parent.parent / "data")))
+    _d = Path(_p.parse_known_args()[0].data)
+    if not _d.is_dir():
+        raise SystemExit(
+            f"data directory not found: {_d}\n"
+            "Download the dataset from https://doi.org/10.5281/zenodo.22006933 and pass its\n"
+            "location with --data /path/to/data (or set UHI_AIR_DATA).")
+    return _d
+
+DATA = _data_dir()
 meta=pd.read_csv(DATA/"need_broad_meta.csv",dtype={"id":str}); S={r.id:(r.lat,r.lon,r.elev) for r in meta.itertuples()}
 adf=pd.read_csv(DATA/"annual_by_elem.csv",dtype={"id":str}); TA={}
 for r in adf.itertuples():
