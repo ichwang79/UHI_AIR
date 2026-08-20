@@ -92,7 +92,7 @@ fs.annotate(ax, 0.02, 0.925,
             f"Europe {100*share.get('Europe',0):.0f}%   "
             f"North America {100*share.get('North America',0):.0f}%   "
             f"Asia {100*share.get('Asia',0):.0f}%   rest {100*(1-share.get('Europe',0)-share.get('North America',0)-share.get('Asia',0)):.0f}%",
-            color=fs.SLATE, size=6.8)
+            color=fs.SLATE, size=7.0)
 fs.panel_label(ax, "a", dx=0.0, dy=1.05)
 
 # --- b: the UHI distribution on both sets ---
@@ -104,15 +104,16 @@ series = [(broad.uhi_tavg, "broad set, mean", fs.GREY),
 for v, lab, c in series:
     v = v.dropna()
     axb.hist(v, bins=bins, histtype="step", linewidth=1.1, color=c, density=True,
-             label=f"{lab}  (median {v.median():+.2f} °C, {100*(v<0).mean():.0f}% negative)")
+             label=f"{lab} \u2014 median {v.median():+.2f} °C, {100*(v<0).mean():.0f}% negative")
 axb.axvline(0, color=fs.INK, lw=0.7, ls=(0, (3, 2)))
 axb.set_xlabel("UHI intensity (°C)")
 axb.set_ylabel("density")
 axb.set_xlim(-3, 3)
-axb.legend(loc="upper left", frameon=False, fontsize=6.6, labelspacing=0.3,
+axb.legend(loc="upper left", frameon=False, fontsize=7.0, labelspacing=0.32,
            handlelength=1.4, borderpad=0.2)
 for sp in ("top", "right"):
     axb.spines[sp].set_visible(False)
+axb.spines["left"].set_bounds(0, axb.get_ylim()[1])
 fs.panel_label(axb, "b", dx=-0.055, dy=1.14)
 
 fig.savefig(OUT)
